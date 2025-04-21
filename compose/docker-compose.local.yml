@@ -3,7 +3,7 @@ services:
     build:
       context: ../
       dockerfile: dockerfile
-    container_name: portafolio-dev
+    container_name: portafolio-local
     restart: always
     environment:
       - HOST=0.0.0.0
