@@ -38,3 +38,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#  personal ignores
+/compose/docker-compose.prod.yml
+/compose/docker-compose.dev.yml
+dockerfile.dev
+dockerfile.prod

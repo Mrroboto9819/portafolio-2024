@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react'
 import { Github, Linkedin, Mail, Menu, X, Home, Briefcase, BookOpen} from 'lucide-react'
 import Head from 'next/head';
-// import Wave from '../components/Wave'
 
 export default function Portfolio() {
   const [isDarkMode] = useState(false)
@@ -54,7 +53,7 @@ export default function Portfolio() {
   const experience = [
     {
       company: "Dokit Pro",
-      logo: "https://media.licdn.com/dms/image/v2/D4E0BAQGgDTa0975Z0g/company-logo_100_100/company-logo_100_100/0/1704320402777?e=1740614400&v=beta&t=k0wrU-x-9pfRcCAvFuy8fb0vJ_pUfMbfjLKP3xAw1RE",
+      logo: "/images/dokitpro.png",
       title: "Full Stack Web Developer",
       period: "2024 - Present",
       description: "I am currently working as a Fullstack where we have been making microservices for a SaaS app using technologies like Django, Flask and Vuejs",
@@ -62,7 +61,7 @@ export default function Portfolio() {
     },
     {
       company: "Alluxi",
-      logo: "https://media.licdn.com/dms/image/v2/D4E0BAQHiOwLhAmSZ6A/company-logo_100_100/company-logo_100_100/0/1710606378454/alluxi_mx_logo?e=1740614400&v=beta&t=sRWeXGZELvqbbtYCxfwYPV4go20kvt9qCePQgdiI0bg",
+      logo: "/images/alluxi.png",
       title: "Full Stack Web Developer",
       period: "2022 - 2024",
       description: "I worked making many custom software for USA and Mexico clients where I worked with tech as Django, NodeJS, React Native, React and VueJs",
@@ -70,7 +69,7 @@ export default function Portfolio() {
     },
     {
       company: "Innovaciones 20 veinte",
-      logo: "https://media.licdn.com/dms/image/v2/C4E0BAQE6bjwoXo7sNQ/company-logo_100_100/company-logo_100_100/0/1630642954680?e=1740614400&v=beta&t=FrU2IQwTuUZzz_E3-3My-KAXEy6ujeZvhh8rgnvXQq8",
+      logo: "/images/i20veinte.png",
       title: "Web Developer",
       period: "2021 - 2022",
       description: "I worked with php, react and wordpress for making modules in a SaaS",
