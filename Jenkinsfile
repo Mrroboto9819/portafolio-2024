@@ -31,16 +31,16 @@ pipeline {
         stage('Build & Deploy Production App') {
             steps {
                 script {
-                    def composeFile = 'compose/docker-compose.dev.yml'
+                    def composeFile = './compose/docker-compose.dev.yml'
 
                     if (!fileExists(composeFile)) {
                         error "❌ ${composeFile} not found. Cannot deploy."
                     }
 
                     sh """
-                    docker compose -f ${composeFile} down || true
-                    docker compose -f ${composeFile} build
-                    docker compose -f ${composeFile} up -d
+                    docker-compose -f compose/docker-compose.dev.yml down || true
+                    docker-compose -f compose/docker-compose.dev.yml build
+                    docker-compose -f compose/docker-compose.dev.yml up -d
                     """
                 }
             }
