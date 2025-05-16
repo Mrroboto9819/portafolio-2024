@@ -9,6 +9,7 @@ pipeline {
         stage('Debug') {
             steps {
                 echo "🔧 Global APP_ENV is: ${env.APP_ENV}"
+                
             }
         }
 
