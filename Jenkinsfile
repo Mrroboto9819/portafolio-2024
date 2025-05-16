@@ -2,44 +2,55 @@ pipeline {
     agent any
 
     stages {
-        stage('Copy Dev Files from Template if Missing') {
+        stage('Sync Dev Files from Node.js Template') {
             steps {
                 script {
+                    def templatesBase = '/templates'
+                    def dockerDevFile = 'dockerfile.dev'
                     def composeDir = 'compose'
                     def composeDevFile = "${composeDir}/docker-compose.dev.yml"
-                    def dockerDevFile = 'dockerfile.dev'
-                    def templatePath = '/templates'
 
                     sh "mkdir -p ${composeDir}"
 
-                    if (!fileExists(dockerDevFile)) {
-                        sh "cp ${templatePath}/dockerfile.dev ${dockerDevFile}"
-                        echo "Copied ${dockerDevFile} from template"
-                    } else {
-                        echo "${dockerDevFile} already exists"
-                    }
+                    sh "cp ${templatesBase}/dockerfile.dev ${dockerDevFile}"
+                    echo "Synced ${dockerDevFile} from template"
 
-                    if (!fileExists(composeDevFile)) {
-                        sh "cp ${templatePath}/docker-compose.dev.yml ${composeDevFile}"
-                        echo "Copied ${composeDevFile} from template"
-                    } else {
-                        echo "${composeDevFile} already exists"
-                    }
+                    sh "cp ${templatesBase}/docker-compose.dev.yml ${composeDevFile}"
+                    echo "Synced ${composeDevFile} from template"
                 }
             }
         }
 
-        stage('List Dev Files') {
+        stage('List Config Files') {
             steps {
                 sh 'ls -lah'
                 sh 'ls -lah compose/'
             }
         }
+
+        stage('Build & Deploy Production App') {
+            steps {
+                script {
+                    def composeFile = 'compose/docker-compose.prod.yml'
+
+                    if (!fileExists(composeFile)) {
+                        error "❌ ${composeFile} not found. Cannot deploy."
+                    }
+
+                    sh """
+                    docker compose -f ${composeFile} down || true
+                    docker compose -f ${composeFile} build
+                    docker compose -f ${composeFile} up -d
+                    """
+                }
+            }
+        }
     }
+
 
     post {
         always {
-            echo 'Dev file setup complete.'
+            echo 'Setup complete.'
         }
     }
 }
