@@ -31,7 +31,7 @@ pipeline {
         stage('Build & Deploy Production App') {
             steps {
                 script {
-                    def composeFile = 'compose/docker-compose.prod.yml'
+                    def composeFile = 'compose/docker-compose.dev.yml'
 
                     if (!fileExists(composeFile)) {
                         error "❌ ${composeFile} not found. Cannot deploy."
