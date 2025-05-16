@@ -85,7 +85,7 @@ return (
     <Head>
         <meta
           name="description"
-          content="[DUMMY] Portfolio of Pablo Cabrera, a Full Stack Web Developer."
+          content="Portfolio of Pablo Cabrera, a Full Stack Web Developer."
         />
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -102,7 +102,7 @@ return (
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex items-center">
-              <span className="text-xl font-semibold">Pablo Cabrera  DUMMY</span>
+              <span className="text-xl font-semibold">Pablo Cabrera</span>
             </div>
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center">
