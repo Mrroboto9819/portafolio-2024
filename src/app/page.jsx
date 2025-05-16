@@ -85,7 +85,7 @@ return (
     <Head>
         <meta
           name="description"
-          content="Portfolio of Pablo Cabrera, a Full Stack Web Developer."
+          content="[DUMMY] Portfolio of Pablo Cabrera, a Full Stack Web Developer."
         />
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
