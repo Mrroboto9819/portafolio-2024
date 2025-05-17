@@ -16,21 +16,26 @@ pipeline {
         stage('Sync Files from Node.js Template') {
             steps {
                 script {
-                    def templatesBase = '/templates'
-                    def dockerfile = "dockerfile.${env.APP_ENV}"
-                    def composeDir = 'compose'
-                    def composeFile = "${composeDir}/docker-compose.${env.APP_ENV}.yml"
-                    def envFile = ".env.${env.APP_ENV == 'dev' ? 'development' : 'production'}"
+                def templatesBase = '/templates'
+                def dockerfile = "dockerfile.${env.APP_ENV}"
+                def composeDir = 'compose'
+                def composeFile = "${composeDir}/docker-compose.${env.APP_ENV}.yml"
+                def envFileName = ".env.${env.APP_ENV == 'dev' ? 'development' : 'production'}"
 
-                    sh "mkdir -p ${composeDir}"
-                    sh "cp ${templatesBase}/${dockerfile} ${dockerfile}"
-                    echo "✅ Synced ${dockerfile} from template"
+                // Create compose dir if it doesn't exist
+                sh "mkdir -p ${composeDir}"
 
-                    sh "cp ${templatesBase}/docker-compose.${env.APP_ENV}.yml ${composeFile}"
-                    echo "✅ Synced ${composeFile} from template"
+                // Copy Dockerfile
+                sh "cp ${templatesBase}/${dockerfile} ${dockerfile}"
+                echo "✅ Synced ${dockerfile} from template"
 
-                    sh "cp ${templatesBase}/${envFile} ${envFile}"
-                    echo "✅ Synced ${envFile} into ${targetEnvFile}"
+                // Copy docker-compose
+                sh "cp ${templatesBase}/docker-compose.${env.APP_ENV}.yml ${composeFile}"
+                echo "✅ Synced ${composeFile} from template"
+                // dummy commit
+                // Copy .env to project root
+                sh "cp ${templatesBase}/${envFileName} ${envFileName}"
+                echo "✅ Synced ${envFileName} to project root"
                 }
             }
         }
