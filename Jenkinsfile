@@ -22,20 +22,16 @@ pipeline {
                 def composeFile = "${composeDir}/docker-compose.${env.APP_ENV}.yml"
                 def envFileName = ".env.${env.APP_ENV == 'dev' ? 'development' : 'production'}"
 
-                // Create compose dir if it doesn't exist
                 sh "mkdir -p ${composeDir}"
 
-                // Copy Dockerfile
                 sh "cp ${templatesBase}/${dockerfile} ${dockerfile}"
                 echo "✅ Synced ${dockerfile} from template"
 
-                // Copy docker-compose
                 sh "cp ${templatesBase}/docker-compose.${env.APP_ENV}.yml ${composeFile}"
                 echo "✅ Synced ${composeFile} from template"
-                // dummy commit
-                // Copy .env to project root
-                sh "cp ${templatesBase}/${envFileName} ${envFileName}"
-                echo "✅ Synced ${envFileName} to project root"
+
+                sh "cp ${templatesBase}/${envFileName} ${composeDir}/${envFileName}"
+                echo "✅ Synced ${envFileName} to ${composeDir}/"
                 }
             }
         }
