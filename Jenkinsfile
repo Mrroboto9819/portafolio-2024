@@ -53,9 +53,9 @@ pipeline {
                     }
 
                     sh """
-                    docker-compose -f ${composeFile} down --remove-orphans || true
-                    docker-compose -f ${composeFile} build
-                    docker-compose -f ${composeFile} up -d
+                        docker-compose -p portfolio-${env.APP_ENV} -f ${composeFile} down || true
+                        docker-compose -p portfolio-${env.APP_ENV} -f ${composeFile} build
+                        docker-compose -p portfolio-${env.APP_ENV} -f ${composeFile} up -d
                     """
                 }
             }
