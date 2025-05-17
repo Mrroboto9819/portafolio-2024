@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
 
+const ipRateLimitMap = new Map();
+
 export async function POST(req) {
   const JWT_SECRET = process.env.JWT_SECRET;
   const MAILGUN_API_KEY = process.env.MAILGUN_API_KEY;
@@ -14,12 +16,23 @@ export async function POST(req) {
     return NextResponse.json({ message: 'Missing fields' }, { status: 400 });
   }
 
-  const tokenCookie = req.cookies.get('contact_token')?.value;
+  const now = Date.now();
+  const oneHourAgo = now - 60 * 60 * 1000;
+  const attempts = ipRateLimitMap.get(ip) || [];
 
+  const recentAttempts = attempts.filter(ts => ts > oneHourAgo);
+  if (recentAttempts.length >= 5) {
+    return NextResponse.json({ message: 'Too many messages from this IP. Try again later.' }, { status: 429 });
+  }
+
+  recentAttempts.push(now);
+  ipRateLimitMap.set(ip, recentAttempts);
+
+  const tokenCookie = req.cookies.get('contact_token')?.value;
   if (tokenCookie) {
     try {
       jwt.verify(tokenCookie, JWT_SECRET);
-      return NextResponse.json({ message: 'You already sent a message. Please wait.' }, { status: 429 });
+      return NextResponse.json({ message: 'You already sent a message recently.' }, { status: 429 });
     } catch (err) {
       if (err.name !== 'TokenExpiredError') {
         return NextResponse.json({ message: 'Invalid token' }, { status: 401 });
@@ -54,7 +67,7 @@ export async function POST(req) {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'Strict',
-    maxAge: 60 * 60, // 1 hour
+    maxAge: 60 * 60,
     path: '/',
   });
 
