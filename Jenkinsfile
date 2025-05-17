@@ -20,13 +20,18 @@ pipeline {
                     def dockerfile = "dockerfile.${env.APP_ENV}"
                     def composeDir = 'compose'
                     def composeFile = "${composeDir}/docker-compose.${env.APP_ENV}.yml"
+                    def envFile = ".env.${env.APP_ENV == 'dev' ? 'development' : 'production'}"
+                    def targetEnvFile = "${composeDir}/${envFile}"
 
                     sh "mkdir -p ${composeDir}"
                     sh "cp ${templatesBase}/${dockerfile} ${dockerfile}"
-                    echo "Synced ${dockerfile} from template"
+                    echo "✅ Synced ${dockerfile} from template"
 
                     sh "cp ${templatesBase}/docker-compose.${env.APP_ENV}.yml ${composeFile}"
-                    echo "Synced ${composeFile} from template"
+                    echo "✅ Synced ${composeFile} from template"
+
+                    sh "cp ${templatesBase}/${envFile} ${targetEnvFile}"
+                    echo "✅ Synced ${envFile} into ${targetEnvFile}"
                 }
             }
         }

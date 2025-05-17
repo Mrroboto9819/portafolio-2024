@@ -1,13 +1,39 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Github, Linkedin, Mail, Menu, X, Home, Briefcase, BookOpen} from 'lucide-react'
+import { Github, Linkedin, Mail, Menu, X, Home, Briefcase, BookOpen, Send, PhoneCall } from 'lucide-react';
 import Head from 'next/head';
 
 export default function Portfolio() {
   const [isDarkMode] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [canSend, setCanSend] = useState(true);
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    message: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const formFields = [
+    {
+      name: 'name',
+      type: 'text',
+      placeholder: 'Your Name',
+      icon: Home,
+    },
+    {
+      name: 'email',
+      type: 'email',
+      placeholder: 'Your Email',
+      icon: Mail,
+    },
+  ];
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10)
@@ -23,14 +49,49 @@ export default function Portfolio() {
     }
   }, [isDarkMode])
 
+  useEffect(() => {
+    const token = localStorage.getItem('contact_token');
+    if (token) {
+      const decoded = JSON.parse(atob(token.split('.')[1]));
+      const exp = decoded.exp * 1000;
+      if (Date.now() < exp) {
+        setCanSend(false);
+      }
+    }
+  }, []);
+
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen)
   const closeMobileMenu = () => setIsMobileMenuOpen(false)
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const res = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: form.name,
+          email: form.email,
+          message: form.message,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.message);
+      alert('Message sent successfully!');
+    } catch (err) {
+      alert(err.message || 'Failed to send message.');
+    }
+  };
+
 
   const navItems = [
     { name: 'About', icon: Home },
     { name: 'Skills', icon: BookOpen },
     { name: 'Experience', icon: Briefcase },
-    // { name: 'Contact', icon: PhoneCall }
+    { name: 'Contact', icon: PhoneCall }
   ]
 
   const socialIcons = [
@@ -294,50 +355,72 @@ return (
           {/* <Wave /> */}
         </section>
         {/* Contact Section */}
-        {/* <section id="contact" className="py-16 md:py-20 bg-gray-100 dark:bg-gray-900 animate-fade-in relative overflow-hidden">
+        <section
+          id="contact"
+          className="py-16 md:py-20 bg-gray-100 dark:bg-gray-900 animate-fade-in relative overflow-hidden"
+        >
           <div className="max-w-md mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center text-gray-900 dark:text-gray-100">Contact Me</h2>
+            <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center text-gray-900 dark:text-gray-100">
+              Contact Me
+            </h2>
+
             <form onSubmit={handleSubmit} className="space-y-6 bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg">
-              {formFields.map((field) => (
-                <div key={field.name} className="relative">
-                  <label htmlFor={field.name} className="text-gray-700 dark:text-gray-300 mb-2 block">{field.placeholder}</label>
+              {canSend ? (
+                <>
+                  {formFields.map((field) => (
+                    <div key={field.name} className="relative">
+                      <label htmlFor={field.name} className="text-gray-700 dark:text-gray-300 mb-2 block">
+                        {field.placeholder}
+                      </label>
+                      <div className="relative">
+                        <input
+                          type={field.type}
+                          id={field.name}
+                          name={field.name}
+                          value={form[field.name]}
+                          onChange={handleChange}
+                          placeholder={field.placeholder}
+                          className="w-full p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-300 text-gray-900 dark:text-gray-100 pl-12"
+                          required
+                        />
+                        <field.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 h-6 w-6" />
+                      </div>
+                    </div>
+                  ))}
+
                   <div className="relative">
-                    <input
-                      type={field.type}
-                      id={field.name}
-                      name={field.name}
-                      value={form[field.name]}
+                    <label htmlFor="message" className="text-gray-700 dark:text-gray-300 mb-2 block">
+                      Your Message
+                    </label>
+                    <textarea
+                      id="message"
+                      name="message"
+                      value={form.message}
                       onChange={handleChange}
-                      placeholder={field.placeholder}
-                      className="w-full p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-300 text-gray-900 dark:text-gray-100 pl-12"
+                      placeholder="Your Message"
+                      className="w-full p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-300 h-32 text-gray-900 dark:text-gray-100"
                       required
-                    />
-                    <field.icon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 h-6 w-6" />
+                    ></textarea>
                   </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-blue-600 dark:bg-blue-500 text-white py-4 px-6 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300 transform hover:scale-105 flex items-center justify-center"
+                  >
+                    <Send className="mr-2 h-5 w-5" />
+                    Send Message
+                  </button>
+                </>
+              ) : (
+                <div className="text-center text-gray-700 dark:text-gray-300">
+                  <p className="text-lg font-medium">
+                    You’ve already sent a message. Please try again later.
+                  </p>
                 </div>
-              ))}
-              <div className="relative">
-                <label htmlFor="message" className="text-gray-700 dark:text-gray-300 mb-2 block">Your Message</label>
-                <textarea
-                  id="message"
-                  name="message"
-                  value={form.message}
-                  onChange={handleChange}
-                  placeholder="Your Message"
-                  className="w-full p-4 bg-gray-50 dark:bg-gray-700 rounded-lg border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 transition duration-300 h-32 text-gray-900 dark:text-gray-100"
-                  required
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                className="w-full bg-blue-600 dark:bg-blue-500 text-white py-4 px-6 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition duration-300 transform hover:scale-105 flex items-center justify-center"
-              >
-                <Send className="mr-2 h-5 w-5" />
-                Send Message
-              </button>
+              )}
             </form>
           </div>
-        </section> */}
+        </section>
         {/* Styles */}
         <style jsx>{`
           /* Hero Gradient Animation */
