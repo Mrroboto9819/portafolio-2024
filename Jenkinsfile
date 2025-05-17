@@ -53,7 +53,7 @@ pipeline {
                     }
 
                     sh """
-                    docker-compose -f ${composeFile} down --remove-orphans -v || true
+                    docker-compose -f ${composeFile} down --remove-orphans || true
                     docker-compose -f ${composeFile} build
                     docker-compose -f ${composeFile} up -d
                     """
