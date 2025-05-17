@@ -53,7 +53,7 @@ pipeline {
                     }
 
                     sh """
-                        docker-compose -p portfolio-${env.APP_ENV} -f ${composeFile} down|| true
+                        docker-compose -p portfolio-${env.APP_ENV} -f ${composeFile} down || true
                         docker-compose -p portfolio-${env.APP_ENV} -f ${composeFile} build
                         docker-compose -p portfolio-${env.APP_ENV} -f ${composeFile} up -d
                     """
